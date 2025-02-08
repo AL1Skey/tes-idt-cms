@@ -1,0 +1,22 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "rmdir /s /q .nuxt && nuxt build",
+    "dev": "rmdir /s /q .nuxt && nuxt dev",
+    "generate": "rmdir /s /q .nuxt && nuxt generate",
+    "preview": "rmdir /s /q .nuxt && nuxt preview",
+    "postinstall": "rmdir /s /q .nuxt && nuxt prepare",
+    "clean": "rm -rf .nuxt || rmdir /s /q .nuxt"
+  },
+  "dependencies": {
+    "@nuxtjs/axios": "^5.13.6",
+    "nuxt": "^3.15.4",
+    "vue": "latest",
+    "vue-router": "latest"
+  },
+  "devDependencies": {
+    "@nuxtjs/tailwindcss": "^6.13.1"
+  }
+}
