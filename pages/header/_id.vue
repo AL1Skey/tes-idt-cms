@@ -25,7 +25,7 @@
   <script setup>
   import { ref, onMounted } from 'vue';
   const config = useRuntimeConfig();
-  const token = useCookie('token').value;
+  const token = useCookie('token', { default: () => '' }).value;
   const route = useRoute();
   const form = ref({ id: null, title: '', description: '' });
   const headerId = route.params.id;

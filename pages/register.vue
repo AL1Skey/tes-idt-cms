@@ -45,7 +45,7 @@
   const form = ref({ username: '', name: '', email: '', password: '' });
   const error = ref('');
   const config = useRuntimeConfig();
-  const token = useCookie('token');
+  const token = useCookie('token', { default: () => '' });
   async function handleRegister() {
     try {
       const { data, error: fetchError } = await useFetch(`${config.public.apiBase}/register`, {

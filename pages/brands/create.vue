@@ -21,7 +21,7 @@
   import { ref } from 'vue';
   const config = useRuntimeConfig();
   const form = ref({ logo: '', copyright: '' });
-  const token = useCookie('token').value;
+  const token = useCookie('token', { default: () => '' }).value;
   
   async function createBrand() {
     const { error } = await useFetch(`${config.public.apiBase}/brands`, {

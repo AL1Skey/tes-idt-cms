@@ -33,7 +33,7 @@
 import { ref } from 'vue';
 const config = useRuntimeConfig();
 const form = ref({ title: '', description: '', phone_number: '', email: '', address: '' });
-const token = useCookie('token').value;
+const token = useCookie('token', { default: () => '' }).value;
 
 async function createFooter() {
   const { error } = await useFetch(`${config.public.apiBase}/footers`, {

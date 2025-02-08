@@ -1,5 +1,5 @@
 <template>
-    <div class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="flex items-center justify-center min-h-screen bg-gray-100" style="background: url('https://images.pexels.com/photos/1563356/pexels-photo-1563356.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500') center / cover no-repeat;">
       <div class="w-full max-w-md p-8 space-y-6 bg-white rounded shadow">
         <h1 class="text-2xl font-bold text-center">Login</h1>
         <form @submit.prevent="handleLogin" class="space-y-4">
@@ -31,7 +31,7 @@
   const form = ref({ username: '', password: '' });
   const error = ref('');
   const config = useRuntimeConfig();
-  const token = useCookie('token');
+  const token = useCookie('token', { default: () => '' });
   async function handleLogin() {
     try {
       const { data, error: fetchError } = await useFetch(`${config.public.apiBase}/login`, {

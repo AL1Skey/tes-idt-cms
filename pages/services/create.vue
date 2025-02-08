@@ -25,7 +25,7 @@
   import { ref } from 'vue';
   const config = useRuntimeConfig();
   const form = ref({ title: '', description: '', service_list: [] });
-  const token = useCookie('token').value;
+  const token = useCookie('token', { default: () => '' }).value;
   const serviceListText = ref('');
   
   async function createService() {

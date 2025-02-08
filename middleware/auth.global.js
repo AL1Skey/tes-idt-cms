@@ -3,7 +3,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
   if (process.server) return;
 
   const publicPaths = ['/login', '/register'];
-  const token = useCookie('token').value;
+  const token = useCookie('token', { default: () => '' }).value;
   
   if (!token && !publicPaths.includes(to.path)) {
     return navigateTo('/login');

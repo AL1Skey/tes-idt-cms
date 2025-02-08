@@ -22,7 +22,7 @@
 import { ref, onMounted } from 'vue';
 const config = useRuntimeConfig();
 const footers = ref([]);
-const token = useCookie('token').value;
+const token = useCookie('token', { default: () => '' }).value;
 
 async function fetchFooters() {
   const { data, error } = await useFetch(`${config.public.apiBase}/footers`, {
