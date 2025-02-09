@@ -2,8 +2,8 @@
   <div class="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md mx-auto bg-white rounded-lg shadow-xl overflow-hidden">
       <div class="px-6 py-8">
-        <h1 class="text-3xl font-bold text-gray-900 mb-6">Create Service</h1>
-        <form @submit.prevent="createService" class="space-y-6">
+        <h1 class="text-3xl font-bold text-gray-900 mb-6">Edit Service</h1>
+        <form @submit.prevent="updateService" class="space-y-6">
           <div>
             <label 
               for="title" 
@@ -57,12 +57,19 @@
             </div>
           </div>
           
-          <div>
+          <div class="flex items-center justify-between space-x-4">
             <button 
               type="submit" 
-              class="w-full bg-blue-600 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-300 ease-in-out"
+              class="flex-1 bg-blue-600 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-300 ease-in-out"
             >
-              Create Service
+              Update Service
+            </button>
+            <button 
+              type="button"
+              @click="deleteService" 
+              class="flex-1 bg-red-600 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-300 ease-in-out"
+            >
+              Delete Service
             </button>
           </div>
         </form>
@@ -72,27 +79,56 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 const config = useRuntimeConfig();
-const router = useRouter();
-const form = ref({ title: '', description: '', service_list: [] });
 const token = useCookie('token', { default: () => '' }).value;
+const route = useRoute();
+const router = useRouter();
+const form = ref({ id: null, title: '', description: '', service_list: [] });
 const serviceListText = ref('');
+const serviceId = route.params.id;
 
-async function createService() {
-  form.value.service_list = serviceListText.value//.split(',').map(item => item.trim()).filter(Boolean);
-  const { error } = await useFetch(`${config.public.apiBase}/services`, {
-    method: 'POST',
+async function fetchService() {
+  const { data, error } = await useFetch(`${config.public.apiBase}/services/${serviceId}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  if (!error.value && data.value) {
+    form.value = data.value;
+    serviceListText.value = form.value.service_list ? form.value.service_list.join(', ') : '';
+  }
+}
+
+async function updateService() {
+  form.value.service_list = serviceListText.value.split(',').map(item => item.trim()).filter(Boolean);
+  const { error } = await useFetch(`${config.public.apiBase}/services/${serviceId}`, {
+    method: 'PUT',
     headers: { Authorization: `Bearer ${token}` },
     body: form.value
   });
   if (!error.value) {
-    alert("Service created successfully");
+    alert("Service updated successfully");
     router.push('/services');
   } else {
-    alert("Error creating service");
+    alert("Error updating service");
   }
 }
+
+async function deleteService() {
+  if (confirm("Are you sure you want to delete this service?")) {
+    const { error } = await useFetch(`${config.public.apiBase}/services/${serviceId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!error.value) {
+      alert("Service deleted successfully");
+      router.push('/services');
+    } else {
+      alert("Error deleting service");
+    }
+  }
+}
+
+onMounted(fetchService);
 </script>

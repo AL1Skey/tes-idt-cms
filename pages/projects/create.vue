@@ -2,10 +2,10 @@
   <div class="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md mx-auto bg-white rounded-lg shadow-xl overflow-hidden">
       <div class="px-6 py-8">
-        <h1 class="text-3xl font-bold text-gray-900 mb-6">Create New Brand</h1>
-        <form @submit.prevent="createBrand" class="space-y-6">
+        <h1 class="text-3xl font-bold text-gray-900 mb-6">Create New Project</h1>
+        <form @submit.prevent="createProject" class="space-y-6">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Logo</label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Image</label>
             <div class="flex items-center justify-center p-4 border-2 border-gray-300 border-dashed rounded-lg transition-all duration-300 ease-in-out hover:border-green-500">
               <div class="space-y-1 text-center" v-if="!imagePreview">
                 <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
@@ -21,7 +21,7 @@
                 <p class="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
               </div>
               <div v-else class="w-full">
-                <img :src="imagePreview" alt="Logo Preview" class="mx-auto h-32 w-auto object-contain" />
+                <img :src="imagePreview" alt="image Preview" class="mx-auto h-32 w-auto object-contain" />
                 <button @click="removeImage" class="mt-2 text-sm text-red-600 hover:text-red-800 focus:outline-none">
                   Remove image
                 </button>
@@ -29,12 +29,16 @@
             </div>
           </div>
           <div>
-            <label for="copyright" class="block text-sm font-medium text-gray-700 mb-2">Copyright</label>
-            <input v-model="form.copyright" id="copyright" type="text" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm" />
+            <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Name of Project</label>
+            <input v-model="form.name" id="name" type="text" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm" />
+          </div>
+          <div>
+            <label for="url" class="block text-sm font-medium text-gray-700 mb-2">Url of Project</label>
+            <input v-model="form.url" id="url" type="text" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm" />
           </div>
           <div>
             <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-300 ease-in-out">
-              Create Brand
+              Create Project
             </button>
           </div>
         </form>
@@ -48,7 +52,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const config = useRuntimeConfig();
-const form = ref({ logo: null, copyright: '' });
+const form = ref({ image: null, name: '', url: '' });
 const imagePreview = ref(null);
 const token = useCookie('token', { default: () => '' }).value;
 const router = useRouter();
@@ -56,7 +60,7 @@ const router = useRouter();
 function handleFileUpload(event) {
   const file = event.target.files[0];
   if (file) {
-    form.value.logo = file;
+    form.value.image = file;
     const reader = new FileReader();
     reader.onload = (e) => {
       imagePreview.value = e.target.result;
@@ -66,27 +70,27 @@ function handleFileUpload(event) {
 }
 
 function removeImage() {
-  form.value.logo = null;
+  form.value.image = null;
   imagePreview.value = null;
   // Reset the file input
   const fileInput = document.getElementById('file-upload');
   if (fileInput) fileInput.value = '';
 }
 
-async function createBrand() {
+async function createProject() {
   const formData = new FormData();
-  formData.append('logo', form.value.logo);
-  formData.append('copyright', form.value.copyright);
-
-  const { error } = await useFetch(`${config.public.apiBase}/brands`, {
+  formData.append('image', form.value.image);
+  formData.append('name', form.value.name);
+  formData.append('url', form.value.url);
+  const { error } = await useFetch(`${config.public.apiBase}/projects`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}` },
     body: formData
   });
 
   if (!error.value) {
-    alert("Brand created successfully");
-    router.push('/brands');
+    alert("Project created successfully");
+    router.push('/projects');
   } else {
     alert("Error creating brand: " + error.value);
   }

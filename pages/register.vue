@@ -4,13 +4,6 @@
         <h1 class="text-2xl font-bold text-center">Register</h1>
         <form @submit.prevent="handleRegister" class="space-y-4">
           <input
-            v-model="form.username"
-            type="text"
-            placeholder="Username"
-            required
-            class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300"
-          />
-          <input
             v-model="form.name"
             type="text"
             placeholder="Name"
@@ -42,7 +35,7 @@
   
   <script setup>
   import { ref } from 'vue';
-  const form = ref({ username: '', name: '', email: '', password: '' });
+  const form = ref({ name: '', email: '', password: '' });
   const error = ref('');
   const config = useRuntimeConfig();
   const token = useCookie('token', { default: () => '' });
@@ -57,7 +50,7 @@
         return;
       }
       token.value = data.value.token;
-      navigateTo('/dashboard');
+      navigateTo('/');
     } catch (err) {
       error.value = 'An error occurred during registration.';
     }

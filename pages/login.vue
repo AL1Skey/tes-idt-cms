@@ -4,9 +4,9 @@
         <h1 class="text-2xl font-bold text-center">Login</h1>
         <form @submit.prevent="handleLogin" class="space-y-4">
           <input
-            v-model="form.username"
+            v-model="form.email"
             type="text"
-            placeholder="Username"
+            placeholder="Email"
             required
             class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300"
           />
@@ -28,7 +28,7 @@
   
   <script setup>
   import { ref } from 'vue';
-  const form = ref({ username: '', password: '' });
+  const form = ref({ email: '', password: '' });
   const error = ref('');
   const config = useRuntimeConfig();
   const token = useCookie('token', { default: () => '' });
@@ -43,7 +43,7 @@
         return;
       }
       token.value = data.value.token;
-      navigateTo('/dashboard');
+      navigateTo('/');
     } catch (err) {
       error.value = 'An error occurred during login.';
     }

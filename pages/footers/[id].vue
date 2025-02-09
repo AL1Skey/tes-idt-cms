@@ -2,8 +2,8 @@
   <div class="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md mx-auto bg-white rounded-lg shadow-xl overflow-hidden">
       <div class="px-6 py-8">
-        <h1 class="text-3xl font-bold text-gray-900 mb-6">Create Footer</h1>
-        <form @submit.prevent="createFooter" class="space-y-6">
+        <h1 class="text-3xl font-bold text-gray-900 mb-6">Edit Footer</h1>
+        <form @submit.prevent="updateFooter" class="space-y-6">
           <div>
             <label for="title" class="block text-sm font-medium text-gray-700 mb-2">Title</label>
             <input 
@@ -29,7 +29,7 @@
           <div>
             <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
             <input 
-              v-model="form.phone" 
+              v-model="form.phone_number" 
               id="phone"
               type="text" 
               required 
@@ -59,12 +59,18 @@
             ></textarea>
           </div>
           
-          <div>
+          <div class="flex items-center justify-between space-x-4">
             <button 
               type="submit" 
-              class="w-full bg-blue-600 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-300 ease-in-out"
+              class="flex-1 bg-blue-600 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-300 ease-in-out"
             >
-              Create Footer
+              Update Footer
+            </button>
+            <button 
+              @click.prevent="deleteFooter" 
+              class="flex-1 bg-red-600 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-300 ease-in-out"
+            >
+              Delete Footer
             </button>
           </div>
         </form>
@@ -74,25 +80,53 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 const config = useRuntimeConfig();
-const router = useRouter();
-const form = ref({ title: '', description: '', phone: '', email: '', address: '' });
 const token = useCookie('token', { default: () => '' }).value;
+const route = useRoute();
+const router = useRouter();
+const form = ref({ id: null, title: '', description: '', phone_number: '', email: '', address: '' });
+const footerId = route.params.id;
 
-async function createFooter() {
-  const { error } = await useFetch(`${config.public.apiBase}/footers`, {
-    method: 'POST',
+async function fetchFooter() {
+  const { data, error } = await useFetch(`${config.public.apiBase}/footers/${footerId}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  if (!error.value && data.value) {
+    form.value = data.value;
+  }
+}
+
+async function updateFooter() {
+  const { error } = await useFetch(`${config.public.apiBase}/footers/${footerId}`, {
+    method: 'PUT',
     headers: { Authorization: `Bearer ${token}` },
     body: form.value
   });
   if (!error.value) {
-    alert("Footer created successfully");
+    alert("Footer updated successfully");
     router.push('/footers');
   } else {
-    alert("Error creating footer");
+    alert("Error updating footer");
   }
 }
+
+async function deleteFooter() {
+  if (confirm("Are you sure you want to delete this footer?")) {
+    const { error } = await useFetch(`${config.public.apiBase}/footers/${footerId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!error.value) {
+      alert("Footer deleted successfully");
+      router.push('/footers');
+    } else {
+      alert("Error deleting footer");
+    }
+  }
+}
+
+onMounted(fetchFooter);
 </script>
