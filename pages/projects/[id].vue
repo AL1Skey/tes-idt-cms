@@ -14,7 +14,7 @@
                 <div class="flex text-sm text-gray-600">
                   <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-green-600 hover:text-green-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-green-500">
                     <span>Upload a file</span>
-                    <input id="file-upload" name="file-upload" type="file" class="sr-only" @change="handleFileUpload" accept="image/*" required />
+                    <input id="file-upload" name="file-upload" type="file" class="sr-only" @change="handleFileChange" accept="image/*" required />
                   </label>
                   <p class="pl-1">or drag and drop</p>
                 </div>
@@ -59,6 +59,7 @@ const token = useCookie('token', { default: () => '' }).value;
 const route = useRoute();
 const router = useRouter();
 const form = ref({ image: null, name: '', url: '' });
+const imagePreview = ref(null);
 const projectId = route.params.id;
 
 async function fetchBrand() {
@@ -67,6 +68,7 @@ async function fetchBrand() {
   });
   if (!error.value && data.value) {
     form.value = data.value;
+    imagePreview.value = data.value.image;
   }
 }
 
@@ -105,9 +107,15 @@ function handleFileChange(event) {
     const reader = new FileReader();
     reader.onload = (e) => {
       form.value.image = e.target.result;
+      imagePreview.value = e.target.result;
     };
     reader.readAsDataURL(file);
   }
+}
+
+function removeImage() {
+  form.value.image = null;
+  imagePreview.value = null;
 }
 
 onMounted(fetchBrand);

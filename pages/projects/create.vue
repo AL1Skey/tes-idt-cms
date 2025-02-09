@@ -60,9 +60,9 @@ const router = useRouter();
 function handleFileUpload(event) {
   const file = event.target.files[0];
   if (file) {
-    form.value.image = file;
     const reader = new FileReader();
     reader.onload = (e) => {
+      form.value.image = e.target.result;
       imagePreview.value = e.target.result;
     };
     reader.readAsDataURL(file);

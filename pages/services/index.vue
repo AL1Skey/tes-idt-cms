@@ -63,7 +63,8 @@ async function fetchServices() {
     headers: { Authorization: `Bearer ${token}` }
   });
   if (!error.value && data.value) {
-    services.value = data.value;
+    console.log(data.value.data)
+    services.value = data.value.data;
   }
 }
 

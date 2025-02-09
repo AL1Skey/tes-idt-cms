@@ -24,11 +24,11 @@
                         </div>
                     </div>
                     <div class="flex space-x-2">
-                        <NuxtLink :to="project.url" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-300 ease-in-out">
+                        <NuxtLink :to="`/projects/${project.id}`" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-300 ease-in-out">
                             <PencilIcon class="h-4 w-4 mr-1" />
                             Edit
                         </NuxtLink>
-                        <button @click="deleteBrand(project.url)" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-300 ease-in-out">
+                        <button @click="deleteProject(project.id)" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-300 ease-in-out">
                             <TrashIcon class="h-4 w-4 mr-1" />
                             Delete
                         </button>
@@ -43,7 +43,7 @@
           <div class="mt-6">
             <NuxtLink to="/projects/create" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
               <PlusIcon class="h-5 w-5 mr-2" />
-              Create New Brand
+              Create New Project
             </NuxtLink>
           </div>
         </div>
@@ -70,14 +70,14 @@
     }
   }
   
-  async function deleteBrand(id) {
+  async function deleteProject(id) {
     if (confirm("Are you sure you want to delete this project?")) {
       const { error } = await useFetch(`${config.public.apiBase}/projects/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
       if (!error.value) {
-        alert("Brand deleted successfully");
+        alert("Project deleted successfully");
         fetchprojects();
       } else {
         alert("Error deleting project");
