@@ -77,7 +77,7 @@ import { useRouter } from 'vue-router';
 
 const config = useRuntimeConfig();
 const router = useRouter();
-const form = ref({ title: '', description: '', service_list: [] });
+const form = ref({ title: '', description: '', service_list: '' });
 const token = useCookie('token', { default: () => '' }).value;
 const serviceListText = ref('');
 

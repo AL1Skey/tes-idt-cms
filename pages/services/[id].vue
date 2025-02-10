@@ -96,12 +96,12 @@ async function fetchService() {
   });
   if (!error.value && data.value) {
     form.value = data.value;
-    serviceListText.value = form.value.service_list ? form.value.service_list.join(', ') : '';
+    serviceListText.value = form.value.service_list ? form.value.service_list : '';
   }
 }
 
 async function updateService() {
-  form.value.service_list = serviceListText.value.split(',').map(item => item.trim()).filter(Boolean);
+  form.value.service_list = serviceListText.value//.split(',').map(item => item.trim()).filter(Boolean);
   const { error } = await useFetch(`${config.public.apiBase}/services/${serviceId}`, {
     method: 'PUT',
     headers: { Authorization: `Bearer ${token}` },
